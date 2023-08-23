@@ -1,0 +1,8 @@
+<div class="keyboard">
+  <ng-container *ngFor="let row of keyboard; let i = index;">
+    <button *ngFor="let key of row; let j = index; let first = first; let last = last"
+      [ngStyle]="{'grid-column': getKeyColumnSize(j, i, first, last), 'grid-row': i + 1}">
+      {{ key }}
+    </button>
+  </ng-container>
+</div>
