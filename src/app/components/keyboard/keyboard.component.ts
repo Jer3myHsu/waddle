@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output, WritableSignal, signal } from '@angular/core';
 
 @Component({
   selector: 'app-keyboard',
@@ -6,11 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./keyboard.component.scss']
 })
 export class KeyboardComponent {
+  @Output() keyPress = new EventEmitter<string>();
+
   keyboard = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Back']
-  ]
+    ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
+  ];
 
   getKeyColumnSize(index: number, row: number, first: boolean, last: boolean) {
     let left = (index * 2) + 1;
