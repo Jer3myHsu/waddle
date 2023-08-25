@@ -1,6 +1,12 @@
-import { Component, HostListener, OnInit, Signal, WritableSignal, effect, signal } from '@angular/core';
+import { Component, HostListener, OnInit, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { WordService } from './services/word.service';
+import { KeyStatus } from './enums/key-status';
+
+interface KeyTile {
+  key: string,
+  status: KeyStatus
+}
 
 @Component({
   selector: 'app-root',
@@ -8,12 +14,43 @@ import { WordService } from './services/word.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  randomWord: Signal<string | undefined> = toSignal(this.wordService.getRandomWord());
-  guess: WritableSignal<string> = signal('');
+  readonly wordLength = 5;
+  readonly tries = 6;
+
+  answer: Signal<string> = toSignal(this.wordService.getRandomWord(this.wordLength), {initialValue: 'WATER'});
+  input: WritableSignal<KeyTile[]> = signal([]);
+  guess: WritableSignal<KeyTile[]> = signal([]);
+
+  attempt: Signal<KeyTile[]> = computed(() => {
+    if (this.guess()?.length < this.wordLength || this.answer()?.length < this.wordLength) {
+      return [];
+    }
+    const guess = structuredClone(this.guess());
+    for (let i = 0; i < this.wordLength; i++) {
+      if (guess[i].key === this.answer()?.[i]) {
+        guess[i].status = KeyStatus.Correct;
+      }
+      for (const keyTile of guess) {
+        if (keyTile.key === this.answer()?.[i] && keyTile.status === KeyStatus.None) {
+          keyTile.status = KeyStatus.Partial;
+          break;
+        }
+      }
+    }
+    return guess;
+  });
+  attemptNumber: WritableSignal<number> = signal(6);
 
 
   constructor(private wordService: WordService) {
-    effect(() => console.log(this.randomWord()));
+    effect(() => {
+      if (this.attempt().reduce((isCorrect, keyTile) => keyTile.status === KeyStatus.Correct && isCorrect, true)) {
+        console.log('You Win');
+      } else if (this.attemptNumber() <= 0) {
+        console.log('You Lose');
+      }
+      // this.answer.
+    });
   }
 
   @HostListener('window:keyup', ['$event'])
@@ -29,29 +66,27 @@ export class AppComponent implements OnInit {
   keyPress(key: string) {
     switch (key) {
       case 'Backspace':
-        this.guess.update(w => w.substring(0, w.length - 1));
+        this.input.update(w => w.slice(0, -1));
         break;
       case 'Enter':
-        if (this.guess().length === 5) {
-          this.checkWord(this.guess());
-          this.guess.set('');
+        if (this.input().length === this.wordLength) {
+          console.log(this.input().reduce((word, keyTile) => word + keyTile.key, ''));
+          this.guess.set(this.input());
+          this.attemptNumber.update(t => t - 1);
+          this.input.set([]);
         }
         break;
       default:
-        if (this.guess().length < 5) {
-          this.guess.update(w => w + key);
+        if (this.input().length < this.wordLength) {
+          this.input.update(w => {
+            w.push({key, status: KeyStatus.None});
+            return w;
+          });
         }
     }
-
-    console.log(this.guess())
-  }
-
-  checkWord(guess: string) {
-    console.log(guess);
   }
 
   ngOnInit(): void {
   }
-
 
 }

@@ -10,10 +10,9 @@ export class WordService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getRandomWord(): Observable<string> {
-    const length = 5;
+  getRandomWord(wordLength: number): Observable<string> {
     const url = 'https://random-word-api.herokuapp.com/word';
-    return this.httpClient.get<string[]>(url, {params: {length, lang: 'en'}}).pipe(
+    return this.httpClient.get<string[]>(url, {params: {length: wordLength, lang: 'en'}}).pipe(
       map(word => word[0]?.toUpperCase()),
       catchError(() => of('crash')));
   }
