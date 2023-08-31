@@ -1,12 +1,10 @@
-import { Component, HostListener, OnInit, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
+import { Component, HostListener, OnInit, Signal, WritableSignal, computed, effect, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { WordService } from './services/word.service';
 import { KeyStatus } from './enums/key-status';
-
-interface KeyTile {
-  key: string,
-  status: KeyStatus
-}
+import { KeyTile } from './models/key-tile';
+import { BehaviorSubject, switchMap } from 'rxjs';
+import { Config } from './config';
 
 @Component({
   selector: 'app-root',
@@ -14,19 +12,21 @@ interface KeyTile {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  readonly wordLength = 5;
-  readonly tries = 6;
 
-  answer: Signal<string> = toSignal(this.wordService.getRandomWord(this.wordLength), {initialValue: 'WATER'});
+  newGame$ = new BehaviorSubject<any>(undefined);
+
+  answer: Signal<string> = toSignal(this.newGame$.pipe(
+    switchMap(() => this.wordService.getRandomWord(Config.wordLength))
+  ), {initialValue: 'WATER'});
   input: WritableSignal<KeyTile[]> = signal([]);
   guess: WritableSignal<KeyTile[]> = signal([]);
 
   attempt: Signal<KeyTile[]> = computed(() => {
-    if (this.guess()?.length < this.wordLength || this.answer()?.length < this.wordLength) {
+    if (this.guess()?.length < Config.wordLength || this.answer()?.length < Config.wordLength) {
       return [];
     }
     const guess = structuredClone(this.guess());
-    for (let i = 0; i < this.wordLength; i++) {
+    for (let i = 0; i < Config.wordLength; i++) {
       if (guess[i].key === this.answer()?.[i]) {
         guess[i].status = KeyStatus.Correct;
       }
@@ -39,12 +39,14 @@ export class AppComponent implements OnInit {
     }
     return guess;
   });
-  attemptNumber: WritableSignal<number> = signal(6);
+  attemptNumber: WritableSignal<number> = signal(Config.tries);
+  guessHistory: WritableSignal<KeyTile[][]> = signal([]);
+  keyHistory: WritableSignal<KeyTile[]> = signal([]);
 
 
   constructor(private wordService: WordService) {
     effect(() => {
-      if (this.attempt().reduce((isCorrect, keyTile) => keyTile.status === KeyStatus.Correct && isCorrect, true)) {
+      if (this.attempt().reduce((isCorrect, keyTile) => keyTile.status === KeyStatus.Correct && isCorrect, !!this.attempt()?.length)) {
         console.log('You Win');
       } else if (this.attemptNumber() <= 0) {
         console.log('You Lose');
@@ -69,19 +71,18 @@ export class AppComponent implements OnInit {
         this.input.update(w => w.slice(0, -1));
         break;
       case 'Enter':
-        if (this.input().length === this.wordLength) {
-          console.log(this.input().reduce((word, keyTile) => word + keyTile.key, ''));
+        if (this.input().length === Config.wordLength) {
           this.guess.set(this.input());
+          this.guessHistory.mutate(history => {
+            history.push(this.attempt());
+          });
           this.attemptNumber.update(t => t - 1);
           this.input.set([]);
         }
         break;
       default:
-        if (this.input().length < this.wordLength) {
-          this.input.update(w => {
-            w.push({key, status: KeyStatus.None});
-            return w;
-          });
+        if (this.input().length < Config.wordLength) {
+          this.input.mutate(i => i.push({key, status: KeyStatus.None}));
         }
     }
   }

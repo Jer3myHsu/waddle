@@ -1,0 +1,33 @@
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  max-width: 300px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+
+  &__tile {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    font-weight: bold;
+    color: whitesmoke;
+    background-color: #00000033;
+    // border: solid 2px transparent;
+    text-align: center;
+    font-size: 32px;
+
+    &-text {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    &--empty {
+      background-color: #00000011;
+      // background-color: transparent;
+      // border-color: #00000011;
+    }
+  }
+}

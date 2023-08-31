@@ -2,5 +2,6 @@
   <h1>Waddle</h1>
 </header>
 <div class="app">
+  <app-game-grid [guesses]="guessHistory()" [input]="input()"></app-game-grid>
   <app-keyboard (keyPress)="keyPress($event)"></app-keyboard>
 </div>
