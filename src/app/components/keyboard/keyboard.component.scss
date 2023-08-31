@@ -3,8 +3,17 @@
   width: 100%;
   grid-template-columns: repeat(20, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 4px;
+  gap: 6px;
 
   button {
+    font-family: 'Quicksand', sans-serif;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    color: tan;
+    background-color: snow;
+    border: none;
+    padding: 10px;
+    overflow: hidden;
   }
 }
