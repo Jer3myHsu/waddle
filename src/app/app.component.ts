@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, Signal, WritableSignal, computed, effect, signal, untracked } from '@angular/core';
+import { Component, HostListener, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { WordService } from './services/word.service';
 import { KeyStatus } from './enums/key-status';
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
 
   answer: Signal<string> = toSignal(this.newGame$.pipe(
     switchMap(() => this.wordService.getRandomWord(Config.wordLength))
-  ), {initialValue: 'WATER'});
+  ), {initialValue: 'CRASH'});
   input: WritableSignal<KeyTile[]> = signal([]);
 
   attempt: Signal<KeyTile[]> = computed(() => {
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
         guess[i].status = KeyStatus.Correct;
       }
       for (const keyTile of guess) {
-        if (keyTile.key === this.answer()?.[i] && keyTile.status === KeyStatus.None) {
+        if (keyTile.key === this.answer()?.[i] && keyTile.status === KeyStatus.Used) {
           keyTile.status = KeyStatus.Partial;
           break;
         }
@@ -40,11 +40,10 @@ export class AppComponent implements OnInit {
   });
   triesLeft: WritableSignal<number> = signal(Config.tries);
   guessHistory: WritableSignal<KeyTile[][]> = signal([]);
-  keyHistory: WritableSignal<KeyTile[]> = signal([]);
+  keyHistory: WritableSignal<{[key: string]: KeyTile}> = signal({});
 
 
-  constructor(private wordService: WordService) {
-  }
+  constructor(private wordService: WordService) {}
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -53,6 +52,42 @@ export class AppComponent implements OnInit {
       this.keyPress(key.toUpperCase());
     } else if (key === 'Backspace' || key === 'Enter') {
       this.keyPress(key);
+    }
+  }
+
+  private enterWord() {
+    this.guessHistory.mutate(history => {
+      history.push(this.attempt());
+    });
+    this.keyHistory.mutate(history => {
+      this.attempt().forEach(keyTile => {
+        history[keyTile.key] = {
+          key: keyTile.key,
+          status: this.pickStatus(keyTile.status, history[keyTile.key]?.status)
+        };
+      });
+    });
+    this.triesLeft.update(t => t - 1);
+    this.checkWin();
+    this.input.set([]);
+  }
+
+  private pickStatus(statusOne: KeyStatus, statusTwo: KeyStatus): KeyStatus {
+    if (statusOne === KeyStatus.Correct || statusTwo === KeyStatus.Correct) {
+      return KeyStatus.Correct;
+    }
+    if (statusOne === KeyStatus.Partial || statusTwo === KeyStatus.Partial) {
+      return KeyStatus.Partial;
+    }
+    return KeyStatus.Used;
+  }
+
+  private checkWin() {
+    if (this.attempt().reduce((isCorrect, keyTile) => keyTile.status === KeyStatus.Correct && isCorrect, !!this.attempt()?.length)) {
+      this.triesLeft.set(0);
+      console.log('You Win');
+    } else if (this.triesLeft() <= 0) {
+      console.log('You Lose');
     }
   }
 
@@ -71,27 +106,18 @@ export class AppComponent implements OnInit {
         break;
       default:
         if (this.input().length < Config.wordLength) {
-          this.input.mutate(i => i.push({key, status: KeyStatus.None}));
+          this.input.mutate(i => i.push({key, status: KeyStatus.Used}));
         }
     }
   }
 
-  enterWord() {
-    this.guessHistory.mutate(history => {
-      history.push(this.attempt());
-    });
-    this.triesLeft.update(t => t - 1);
+  resetGame(button: HTMLButtonElement) {
+    button.blur();
+    this.newGame$.next(undefined);
     this.input.set([]);
-    this.checkWin();
-  }
-
-  checkWin() {
-    if (this.attempt().reduce((isCorrect, keyTile) => keyTile.status === KeyStatus.Correct && isCorrect, !!this.attempt()?.length)) {
-      this.triesLeft.set(0);
-      console.log('You Win');
-    } else if (this.triesLeft() <= 0) {
-      console.log('You Lose');
-    }
+    this.triesLeft.set(Config.tries);
+    this.guessHistory.set([]);
+    this.keyHistory.set({});
   }
 
   ngOnInit(): void {

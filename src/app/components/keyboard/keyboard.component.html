@@ -1,7 +1,8 @@
 <div class="keyboard">
   <ng-container *ngFor="let row of keyboard; let i = index;">
     <button *ngFor="let key of row; let j = index; let first = first; let last = last" (click)="keyPress.emit(key)"
-      [ngStyle]="{'grid-column': getKeyColumnSize(j, i, first, last), 'grid-row': i + 1}">
+      [ngStyle]="{'grid-column': getKeyColumnSize(j, i, first, last), 'grid-row': i + 1,
+                  'color': this.keyColor[key] ? 'snow' : '', 'background-color': getKeyColor(key)}">
       {{ key.length === 1 ? key : '' }}
       <i class="fa-solid fa-delete-left" *ngIf="key === 'Backspace'"></i>
       <i class="fa-solid fa-pencil" *ngIf="key === 'Enter'"></i>

@@ -8,11 +8,9 @@ import { KeyTile } from 'src/app/models/key-tile';
   templateUrl: './game-grid.component.html',
   styleUrls: ['./game-grid.component.scss']
 })
-export class GameGridComponent implements OnInit {
+export class GameGridComponent {
   @Input() guesses: KeyTile[][] = [];
   @Input() input: KeyTile[] = [];
-
-  constructor() {}
 
   get emptyTiles(): any[] {
     return new Array((Config.wordLength * Config.tries) - this.guesses.flat().length - this.input.length);
@@ -26,8 +24,5 @@ export class GameGridComponent implements OnInit {
         return {'background-color': 'goldenrod'};
     }
     return {};
-  }
-
-  ngOnInit(): void {
   }
 }

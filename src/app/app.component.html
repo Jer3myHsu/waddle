@@ -1,7 +1,10 @@
 <header>
   <h1>Waddle</h1>
+  <button #newGame class="app__new-game" (click)="resetGame(newGame)">
+    New game <i class="fa-solid fa-bolt"></i>
+  </button>
 </header>
 <div class="app">
   <app-game-grid [guesses]="guessHistory()" [input]="input()"></app-game-grid>
-  <app-keyboard (keyPress)="keyPress($event)"></app-keyboard>
+  <app-keyboard [keyColor]="keyHistory()" (keyPress)="keyPress($event)"></app-keyboard>
 </div>

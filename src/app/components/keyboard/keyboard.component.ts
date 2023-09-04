@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output, WritableSignal, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { KeyStatus } from 'src/app/enums/key-status';
+import { KeyTile } from 'src/app/models/key-tile';
 
 @Component({
   selector: 'app-keyboard',
@@ -7,6 +9,7 @@ import { Component, EventEmitter, Input, Output, WritableSignal, signal } from '
 })
 export class KeyboardComponent {
   @Output() keyPress = new EventEmitter<string>();
+  @Input() keyColor: {[key: string]: KeyTile} = {};
 
   keyboard = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -28,5 +31,17 @@ export class KeyboardComponent {
       right++;
     }
     return `${left}/${right}`;
+  }
+
+  getKeyColor(key: string): string {
+    switch (this.keyColor[key]?.status) {
+      case KeyStatus.Partial:
+        return 'goldenrod';
+      case KeyStatus.Correct:
+        return 'crimson';
+      case KeyStatus.Used:
+        return '#e7c789';
+    }
+    return '';
   }
 }
