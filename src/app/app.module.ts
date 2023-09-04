@@ -5,12 +5,14 @@ import { AppComponent } from './app.component';
 import { KeyboardComponent } from './components/keyboard/keyboard.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { GameGridComponent } from './components/game-grid/game-grid.component';
+import { DialogComponent } from './components/dialog/dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     KeyboardComponent,
-    GameGridComponent
+    GameGridComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule,

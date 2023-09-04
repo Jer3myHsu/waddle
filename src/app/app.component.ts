@@ -19,13 +19,12 @@ export class AppComponent implements OnInit {
     switchMap(() => this.wordService.getRandomWord(Config.wordLength))
   ), {initialValue: 'WATER'});
   input: WritableSignal<KeyTile[]> = signal([]);
-  guess: WritableSignal<KeyTile[]> = signal([]);
 
   attempt: Signal<KeyTile[]> = computed(() => {
-    if (this.guess()?.length < Config.wordLength || this.answer()?.length < Config.wordLength) {
+    if (this.input()?.length < Config.wordLength || this.answer()?.length < Config.wordLength) {
       return [];
     }
-    const guess = structuredClone(this.guess());
+    const guess = structuredClone(this.input());
     for (let i = 0; i < Config.wordLength; i++) {
       if (guess[i].key === this.answer()?.[i]) {
         guess[i].status = KeyStatus.Correct;
@@ -39,20 +38,12 @@ export class AppComponent implements OnInit {
     }
     return guess;
   });
-  attemptNumber: WritableSignal<number> = signal(Config.tries);
+  triesLeft: WritableSignal<number> = signal(Config.tries);
   guessHistory: WritableSignal<KeyTile[][]> = signal([]);
   keyHistory: WritableSignal<KeyTile[]> = signal([]);
 
 
   constructor(private wordService: WordService) {
-    effect(() => {
-      if (this.attempt().reduce((isCorrect, keyTile) => keyTile.status === KeyStatus.Correct && isCorrect, !!this.attempt()?.length)) {
-        console.log('You Win');
-      } else if (this.attemptNumber() <= 0) {
-        console.log('You Lose');
-      }
-      // this.answer.
-    });
   }
 
   @HostListener('window:keyup', ['$event'])
@@ -66,24 +57,40 @@ export class AppComponent implements OnInit {
   }
 
   keyPress(key: string) {
+    if (!this.triesLeft()) {
+      return;
+    }
     switch (key) {
       case 'Backspace':
         this.input.update(w => w.slice(0, -1));
         break;
       case 'Enter':
         if (this.input().length === Config.wordLength) {
-          this.guess.set(this.input());
-          this.guessHistory.mutate(history => {
-            history.push(this.attempt());
-          });
-          this.attemptNumber.update(t => t - 1);
-          this.input.set([]);
+          this.enterWord();
         }
         break;
       default:
         if (this.input().length < Config.wordLength) {
           this.input.mutate(i => i.push({key, status: KeyStatus.None}));
         }
+    }
+  }
+
+  enterWord() {
+    this.guessHistory.mutate(history => {
+      history.push(this.attempt());
+    });
+    this.triesLeft.update(t => t - 1);
+    this.input.set([]);
+    this.checkWin();
+  }
+
+  checkWin() {
+    if (this.attempt().reduce((isCorrect, keyTile) => keyTile.status === KeyStatus.Correct && isCorrect, !!this.attempt()?.length)) {
+      this.triesLeft.set(0);
+      console.log('You Win');
+    } else if (this.triesLeft() <= 0) {
+      console.log('You Lose');
     }
   }
 

@@ -21,11 +21,11 @@ export class GameGridComponent implements OnInit {
   getTileColor(keyStatus: KeyStatus): {[klass: string]: any} {
     switch (keyStatus) {
       case KeyStatus.Correct:
-        return {'background-color': 'crimson'}
+        return {'background-color': 'crimson'};
       case KeyStatus.Partial:
-        return {'background-color': 'goldenrod'}
+        return {'background-color': 'goldenrod'};
     }
-    return {}
+    return {};
   }
 
   ngOnInit(): void {
