@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
     for (let i = 0; i < Config.wordLength; i++) {
       if (guess[i].key === this.answer()?.[i]) {
         guess[i].status = KeyStatus.Correct;
+        continue;
       }
       for (const keyTile of guess) {
         if (keyTile.key === this.answer()?.[i] && keyTile.status === KeyStatus.Used) {
