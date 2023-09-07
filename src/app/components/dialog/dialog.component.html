@@ -1,1 +1,14 @@
-<p>dialog works!</p>
+<div class="dialog__backdrop">
+  <div class="dialog">
+    <header>
+      <i class="fa-solid fa-trophy"></i> {{title}}
+    </header>
+    <main>
+      {{body}}
+    </main>
+    <footer>
+      <button class="dialog__cancel-button" (click)="dialogRef.close(false)">Close <i class="fa-solid fa-xmark"></i></button>
+      <button class="dialog__ok-button" (click)="dialogRef.close(true)">New Game <i class="fa-solid fa-bolt"></i></button>
+    </footer>
+  </div>
+</div>

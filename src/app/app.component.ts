@@ -1,10 +1,11 @@
-import { Component, HostListener, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
+import { Component, HostListener, OnInit, Signal, WritableSignal, createComponent, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { WordService } from './services/word.service';
 import { KeyStatus } from './enums/key-status';
 import { KeyTile } from './models/key-tile';
 import { BehaviorSubject, switchMap } from 'rxjs';
 import { Config } from './config';
+import { DialogService } from './services/dialog.service';
 
 @Component({
   selector: 'app-root',
@@ -44,7 +45,7 @@ export class AppComponent implements OnInit {
   keyHistory: WritableSignal<{[key: string]: KeyTile}> = signal({});
 
 
-  constructor(private wordService: WordService) {}
+  constructor(private dialogService: DialogService, private wordService: WordService) {}
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -84,12 +85,23 @@ export class AppComponent implements OnInit {
   }
 
   private checkWin() {
-    if (this.attempt().reduce((isCorrect, keyTile) => keyTile.status === KeyStatus.Correct && isCorrect, !!this.attempt()?.length)) {
+    let dialog;
+    if (this.attempt().every((keyTile) => keyTile.status === KeyStatus.Correct)) {
       this.triesLeft.set(0);
-      console.log('You Win');
+      dialog = this.dialogService.open({
+        title: 'You Won!',
+      });
     } else if (this.triesLeft() <= 0) {
-      console.log('You Lose');
+      dialog = this.dialogService.open({
+        title: 'You Lost!',
+        body: this.answer()
+      });
     }
+    dialog?.subscribe((startNewGame: boolean) => {
+      if (startNewGame) {
+        this.resetGame();
+      }
+    });
   }
 
   keyPress(key: string) {
@@ -112,8 +124,8 @@ export class AppComponent implements OnInit {
     }
   }
 
-  resetGame(button: HTMLButtonElement) {
-    button.blur();
+  resetGame(button?: HTMLButtonElement) {
+    button?.blur();
     this.newGame$.next(undefined);
     this.input.set([]);
     this.triesLeft.set(Config.tries);

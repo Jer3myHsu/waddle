@@ -1,0 +1,45 @@
+.dialog {
+  position: fixed;
+  top: 50vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  background-color: antiquewhite;
+  border-radius: 8px;
+  padding: 12px;
+  width: 300px;
+
+  &__backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    backdrop-filter: blur(3px);
+    backdrop-filter: brightness(90%);
+  }
+
+  header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    text-align: center;
+  }
+
+  footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  &__cancel-button {
+    background-color: snow;
+    color: #1e0000;
+  }
+
+  &__ok-button {
+    background-color: darkgreen;
+    color: snow;
+  }
+}

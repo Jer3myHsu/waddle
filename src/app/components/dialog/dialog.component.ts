@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-dialog',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./dialog.component.scss']
 })
 export class DialogComponent {
+  @Input() title = '';
+  @Input() body = '';
+
+  dialogRef
+
+  constructor(private DialogService: DialogService) {
+    this.dialogRef = DialogService;
+  }
 
 }
