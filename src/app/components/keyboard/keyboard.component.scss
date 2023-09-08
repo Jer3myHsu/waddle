@@ -3,11 +3,11 @@
   width: 100%;
   grid-template-columns: repeat(20, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 8px;
+  gap: 6px;
 
   button {
-    font-size: 26px;
-    height: calc((640px - (8px * 9)) / 10);
+    font-size: 20px;
+    height: calc((500px - (6px * 9)) / 10);
     color: #1e0000;
     background-color: snow;
     overflow: hidden;
