@@ -1,10 +1,9 @@
 .game-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  max-width: 300px;
+  gap: 2.5%;
+  max-width: 400px;
   margin: 0 auto;
-  margin-bottom: 20px;
 
   &__tile {
     position: relative;
@@ -16,7 +15,7 @@
     background-color: #e7c789;
     // border: solid 2px transparent;
     text-align: center;
-    font-size: 32px;
+    font-size: 38px;
 
     &-text {
       position: absolute;

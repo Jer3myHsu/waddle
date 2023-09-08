@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
@@ -10,10 +10,18 @@ export class DialogComponent {
   @Input() title = '';
   @Input() body = '';
 
-  dialogRef
-
   constructor(private DialogService: DialogService) {
-    this.dialogRef = DialogService;
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.dialogRef.close(true);
+    }
+  }
+
+  get dialogRef() {
+    return this.DialogService;
   }
 
 }

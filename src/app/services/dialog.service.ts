@@ -12,7 +12,7 @@ export class DialogService {
   constructor(
     private appRef: ApplicationRef,
     private injector: EnvironmentInjector
-    ) { }
+  ) {}
 
   open({title, body}: {title: string, body?: string}): Observable<any> {
     if (this.appRef.viewCount > 1) {

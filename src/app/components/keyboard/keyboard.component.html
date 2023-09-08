@@ -3,9 +3,11 @@
     <button *ngFor="let key of row; let j = index; let first = first; let last = last" (click)="keyPress.emit(key)"
       [ngStyle]="{'grid-column': getKeyColumnSize(j, i, first, last), 'grid-row': i + 1,
                   'color': this.keyColor[key] ? 'snow' : '', 'background-color': getKeyColor(key)}">
-      {{ key.length === 1 ? key : '' }}
-      <i class="fa-solid fa-delete-left" *ngIf="key === 'Backspace'"></i>
-      <i class="fa-solid fa-pencil" *ngIf="key === 'Enter'"></i>
+      <span>
+        {{ key.length === 1 ? key : '' }}
+        <i class="fa-solid fa-delete-left" *ngIf="key === 'Backspace'"></i>
+        <i class="fa-solid fa-pencil" *ngIf="key === 'Enter'"></i>
+      </span>
     </button>
   </ng-container>
 </div>
