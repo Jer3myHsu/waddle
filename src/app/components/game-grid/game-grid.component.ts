@@ -19,7 +19,7 @@ export class GameGridComponent {
   getTileColor(keyStatus: KeyStatus): {[klass: string]: any} {
     switch (keyStatus) {
       case KeyStatus.Correct:
-        return {'background-color': 'crimson'};
+        return {'background-color': 'darkgreen'};
       case KeyStatus.Partial:
         return {'background-color': 'goldenrod'};
     }

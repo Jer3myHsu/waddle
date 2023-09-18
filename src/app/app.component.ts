@@ -96,6 +96,8 @@ export class AppComponent implements OnInit {
         title: 'You Lost!',
         body: this.answer()
       });
+    } else if (this.attempt().reduce((word, tile) => word + tile.key, '') === 'NESSA') {
+      // easter egg
     }
     dialog?.subscribe((startNewGame: boolean) => {
       if (startNewGame) {

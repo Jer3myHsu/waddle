@@ -38,7 +38,7 @@ export class KeyboardComponent {
       case KeyStatus.Partial:
         return 'goldenrod';
       case KeyStatus.Correct:
-        return 'crimson';
+        return 'darkgreen';
       case KeyStatus.Used:
         return '#e7c789';
     }
