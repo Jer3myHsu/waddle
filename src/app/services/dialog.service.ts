@@ -1,6 +1,6 @@
 import { ApplicationRef, ComponentRef, EnvironmentInjector, Injectable, createComponent } from '@angular/core';
 import { DialogComponent } from '../components/dialog/dialog.component';
-import { AsyncSubject, Observable } from 'rxjs';
+import { AsyncSubject, Observable, timer } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class DialogService {
     private injector: EnvironmentInjector
     ) { }
 
-  open({title, body}: {title: string, body?: string}): Observable<any> {
+  open({title, body, cancelButton, confirmButton}: {title: any, body: string, cancelButton: any, confirmButton: any}): Observable<any> {
     if (this.appRef.viewCount > 1) {
       this.close();
     }
@@ -23,8 +23,14 @@ export class DialogService {
       environmentInjector: this.injector
     });
 
-    this.dialogRef.setInput('title', title);
-    this.dialogRef.setInput('body', body);
+    if (title)
+      this.dialogRef.setInput('title', title);
+    if (body)
+      this.dialogRef.setInput('body', body);
+    if (cancelButton)
+      this.dialogRef.setInput('cancelButton', cancelButton);
+    if (confirmButton)
+      this.dialogRef.setInput('confirmButton', confirmButton);
 
     document.body.appendChild(this.dialogRef.location.nativeElement);
 
@@ -33,10 +39,12 @@ export class DialogService {
   }
 
   close(returnValue?: any) {
-    this.appRef.detachView(this.dialogRef.hostView);
-    this.dialogRef.destroy();
     this.dialog.next(returnValue);
     this.dialog.complete();
     this.dialog.unsubscribe();
+    timer(250).subscribe(() => {
+      this.appRef.detachView(this.dialogRef.hostView);
+      this.dialogRef.destroy();
+    });
   }
 }

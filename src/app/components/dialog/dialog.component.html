@@ -1,14 +1,18 @@
-<div class="dialog__backdrop">
+<div class="dialog__backdrop" [@fade] *ngIf="isOpen">
   <div class="dialog">
     <header>
-      <i class="fa-solid fa-trophy"></i> {{title}}
+      <i *ngIf="title?.icon" class="{{title.icon}}"></i> {{title.text}}
     </header>
     <main>
       {{body}}
     </main>
     <footer>
-      <button class="dialog__cancel-button" (click)="dialogRef.close(false)">Close <i class="fa-solid fa-xmark"></i></button>
-      <button class="dialog__ok-button" (click)="dialogRef.close(true)">New Game <i class="fa-solid fa-bolt"></i></button>
+      <button *ngIf="cancelButton" class="dialog__cancel-button" (click)="isOpen = false; dialogRef.close(false)">
+        {{cancelButton.text}} <i *ngIf="cancelButton.icon" class="{{cancelButton.icon}}"></i>
+      </button>
+      <button class="dialog__ok-button" (click)="isOpen = false; dialogRef.close(true)">
+        {{confirmButton.text}} <i *ngIf="confirmButton.icon" class="{{confirmButton.icon}}"></i>
+      </button>
     </footer>
   </div>
 </div>

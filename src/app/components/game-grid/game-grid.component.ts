@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Config } from 'src/app/config';
 import { KeyStatus } from 'src/app/enums/key-status';
 import { KeyTile } from 'src/app/models/key-tile';

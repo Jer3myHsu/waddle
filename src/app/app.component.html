@@ -1,6 +1,6 @@
 <header>
   <h1>Waddle</h1>
-  <button #newGame class="app__new-game" (click)="resetGame(newGame)">
+  <button #newGame class="app__new-game" (click)="this.triesLeft() ? openNewGameDialog({title: {text: 'New Game?'}}) : resetGame(newGame)">
     New Game <i class="fa-solid fa-bolt"></i>
   </button>
 </header>

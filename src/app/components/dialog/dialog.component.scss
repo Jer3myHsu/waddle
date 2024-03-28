@@ -15,8 +15,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    backdrop-filter: blur(3px);
-    backdrop-filter: brightness(90%);
+    backdrop-filter: blur(1px) brightness(85%);
   }
 
   header {
@@ -34,7 +33,7 @@
   footer {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
     margin-top: 20px;
   }
 

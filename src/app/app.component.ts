@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, Signal, WritableSignal, createComponent, computed, signal } from '@angular/core';
+import { Component, HostListener, OnInit, Signal, WritableSignal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { WordService } from './services/word.service';
 import { KeyStatus } from './enums/key-status';
@@ -88,21 +88,37 @@ export class AppComponent implements OnInit {
   }
 
   private checkWin() {
-    let dialog;
     if (this.attempt().every((keyTile) => keyTile.status === KeyStatus.Correct)) {
       this.triesLeft.set(0);
-      dialog = this.dialogService.open({
-        title: 'You Won!',
+      this.openNewGameDialog({
+        title: {
+          text: 'You Won!',
+          icon: 'fa-solid fa-trophy'
+        },
+        confirmButton: {
+          text: 'New Game',
+          icon: 'fa-solid fa-bolt'
+        }
       });
     } else if (this.triesLeft() <= 0) {
-      dialog = this.dialogService.open({
-        title: 'You Lost!',
-        body: this.answer()
+      this.openNewGameDialog({
+        title: {
+          text: 'You Lost!',
+          icon: 'fa-regular fa-face-frown'
+        },
+        body: `The correct word was ${this.answer()}.`,
+        confirmButton: {
+          text: 'New Game',
+          icon: 'fa-solid fa-bolt'
+        }
       });
     } else if (this.attempt().reduce((word, tile) => word + tile.key, '') === 'NESSA') {
       // easter egg
     }
-    dialog?.subscribe((startNewGame: boolean) => {
+  }
+
+  openNewGameDialog(data: any) {
+    this.dialogService.open(data).subscribe((startNewGame: boolean) => {
       if (startNewGame) {
         this.resetGame();
       }
