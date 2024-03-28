@@ -10,10 +10,10 @@ export class DialogComponent {
   @Input() title = '';
   @Input() body = '';
 
-  dialogRef
+  dialogRef;
 
-  constructor(private DialogService: DialogService) {
-    this.dialogRef = DialogService;
+  constructor(private dialogService: DialogService) {
+    this.dialogRef = dialogService;
   }
 
 }
