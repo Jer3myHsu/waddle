@@ -1,6 +1,7 @@
 <div class="keyboard">
   <ng-container *ngFor="let row of keyboard; let i = index;">
     <button *ngFor="let key of row; let j = index; let first = first; let last = last" (click)="keyPress.emit(key)"
+      [@fade]
       [ngStyle]="{'grid-column': getKeyColumnSize(j, i, first, last), 'grid-row': i + 1,
                   'color': this.keyColor[key] ? 'snow' : '', 'background-color': getKeyColor(key)}">
       <span>

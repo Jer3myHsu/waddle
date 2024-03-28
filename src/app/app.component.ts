@@ -3,14 +3,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { WordService } from './services/word.service';
 import { KeyStatus } from './enums/key-status';
 import { KeyTile } from './models/key-tile';
-import { BehaviorSubject, switchMap } from 'rxjs';
+import { BehaviorSubject, delay, switchMap, tap, timer } from 'rxjs';
 import { Config } from './config';
 import { DialogService } from './services/dialog.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+
+  ]
 })
 export class AppComponent implements OnInit {
 
