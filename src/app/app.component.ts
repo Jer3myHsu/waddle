@@ -3,9 +3,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { WordService } from './services/word.service';
 import { KeyStatus } from './enums/key-status';
 import { KeyTile } from './models/key-tile';
-import { BehaviorSubject, delay, switchMap, tap, timer } from 'rxjs';
+import { BehaviorSubject, switchMap } from 'rxjs';
 import { Config } from './config';
 import { DialogService } from './services/dialog.service';
+import { UtilityService } from './services/utility.service';
 
 @Component({
   selector: 'app-root',
@@ -44,11 +45,16 @@ export class AppComponent implements OnInit {
     return guess;
   });
   triesLeft: WritableSignal<number> = signal(Config.tries);
+  blockInput: WritableSignal<boolean> = signal(false);
   guessHistory: WritableSignal<KeyTile[][]> = signal([]);
   keyHistory: WritableSignal<{[key: string]: KeyTile}> = signal({});
 
 
-  constructor(private dialogService: DialogService, private wordService: WordService) {}
+  constructor(
+    private dialogService: DialogService,
+    private utilityService: UtilityService,
+    private wordService: WordService
+  ) {}
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -61,20 +67,23 @@ export class AppComponent implements OnInit {
   }
 
   private enterWord() {
+    this.blockInput.set(true);
     this.guessHistory.mutate(history => {
       history.push(this.attempt());
     });
     this.keyHistory.mutate(history => {
-      this.attempt().forEach(keyTile => {
+      this.utilityService.loopArray(this.attempt(), keyTile => {
         history[keyTile.key] = {
           key: keyTile.key,
           status: this.pickStatus(keyTile.status, history[keyTile.key]?.status)
         };
+      }, {delay: 1000 / 3}, () => {
+        this.triesLeft.update(t => t - 1);
+        this.checkWin();
+        this.input.set([]);
+        this.blockInput.set(false);
       });
     });
-    this.triesLeft.update(t => t - 1);
-    this.checkWin();
-    this.input.set([]);
   }
 
   private pickStatus(statusOne: KeyStatus, statusTwo: KeyStatus): KeyStatus {
@@ -126,7 +135,7 @@ export class AppComponent implements OnInit {
   }
 
   keyPress(key: string) {
-    if (!this.triesLeft()) {
+    if (!this.triesLeft() || this.blockInput()) {
       return;
     }
     switch (key) {
@@ -148,6 +157,7 @@ export class AppComponent implements OnInit {
   resetGame(button?: HTMLButtonElement) {
     button?.blur();
     this.newGame$.next(undefined);
+    this.blockInput.set(false);
     this.input.set([]);
     this.triesLeft.set(Config.tries);
     this.guessHistory.set([]);

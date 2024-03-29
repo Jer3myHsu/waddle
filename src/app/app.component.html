@@ -6,7 +6,7 @@
 </header>
 <main class="app">
   <div class="app__game-grid">
-    <app-game-grid [guesses]="guessHistory()" [input]="input()"></app-game-grid>
+    <app-game-grid [guesses]="guessHistory()" [input]="blockInput() ? [] : input()"></app-game-grid>
   </div>
   <div class="app__keyboard">
     <app-keyboard [keyColor]="keyHistory()" (keyPress)="keyPress($event)"></app-keyboard>
