@@ -5,6 +5,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 interface DialogElement {
   text?: string;
   icon?: string;
+  hidden?: boolean;
 }
 
 @Component({

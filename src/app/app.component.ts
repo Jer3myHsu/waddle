@@ -7,13 +7,20 @@ import { BehaviorSubject, switchMap } from 'rxjs';
 import { Config } from './config';
 import { DialogService } from './services/dialog.service';
 import { UtilityService } from './services/utility.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [
-
+    trigger('twist', [
+      transition(':enter', []),
+      transition('* => *', [
+        animate('1s', style({ transform: 'rotate(360deg)' })),
+        animate(0, style({}))
+      ])
+    ])
   ]
 })
 export class AppComponent implements OnInit {
@@ -23,6 +30,7 @@ export class AppComponent implements OnInit {
   answer: Signal<string> = toSignal(this.newGame$.pipe(
     switchMap(() => this.wordService.getRandomWord(Config.wordLength))
   ), {initialValue: 'CRASH'});
+  easterEgg: WritableSignal<any> = signal({});
   input: WritableSignal<KeyTile[]> = signal([]);
 
   attempt: Signal<KeyTile[]> = computed(() => {
@@ -121,8 +129,32 @@ export class AppComponent implements OnInit {
           icon: 'fa-solid fa-bolt'
         }
       });
-    } else if (this.attempt().reduce((word, tile) => word + tile.key, '') === 'NESSA') {
+    } else {
       // easter egg
+      switch (this.attempt().reduce((word, tile) => word + tile.key, '')) {
+        case 'CHEAT':
+          this.dialogService.open({
+            title: {
+              text: 'Psst...',
+              icon: 'fa-solid fa-ghost'
+            },
+            body: `The correct word is ${this.answer()}.`,
+            cancelButton: {
+              hidden: true
+            }
+          });
+          break;
+        case 'NESSA':
+          break;
+        case 'LIGHT':
+          break;
+        case 'NIGHT':
+          break;
+        case 'TWIST':
+          this.easterEgg.set({twist: Math.random()});
+          break;
+        default:
+      }
     }
   }
 

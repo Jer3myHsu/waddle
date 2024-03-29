@@ -14,7 +14,7 @@ export class DialogService {
     private injector: EnvironmentInjector
     ) { }
 
-  open({title, body, cancelButton, confirmButton}: {title: any, body: string, cancelButton: any, confirmButton: any}): Observable<any> {
+  open({title, body, cancelButton, confirmButton}: {title?: any, body?: string, cancelButton?: any, confirmButton?: any}): Observable<any> {
     if (this.appRef.viewCount > 1) {
       this.close();
     }

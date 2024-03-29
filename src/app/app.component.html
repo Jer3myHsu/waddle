@@ -4,7 +4,7 @@
     New Game <i class="fa-solid fa-bolt"></i>
   </button>
 </header>
-<main class="app">
+<main class="app" [@twist]="easterEgg().twist">
   <div class="app__game-grid">
     <app-game-grid [guesses]="guessHistory()" [input]="blockInput() ? [] : input()"></app-game-grid>
   </div>

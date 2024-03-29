@@ -32,10 +32,14 @@
   }
 
   footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    justify-content: center;
     gap: 10px;
     margin-top: 20px;
+  }
+
+  &__cancel-button, &__ok-button {
+    flex-basis: 50%;
   }
 
   &__cancel-button {
