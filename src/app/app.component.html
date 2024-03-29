@@ -1,6 +1,7 @@
+<div class="app__filter" [@filter]="easterEgg().filter"></div>
 <header>
   <h1>Waddle</h1>
-  <button #newGame class="app__new-game" (click)="this.triesLeft() ? openNewGameDialog({title: {text: 'New Game?'}}) : resetGame(newGame)">
+  <button #newGame class="app__new-game" (click)="clickNewGame(newGame)">
     New Game <i class="fa-solid fa-bolt"></i>
   </button>
 </header>

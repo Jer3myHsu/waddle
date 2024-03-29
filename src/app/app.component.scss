@@ -5,12 +5,12 @@
 }
 
 header {
-  border-bottom: solid 1px #00000066;
   position: sticky;
   top: 0;
   z-index: 1;
   background-color: antiquewhite;
-  padding: 10px 0;
+  padding-top: 10px;
+  box-shadow: antiquewhite 0 0 10px 10px;
 
   h1 {
     text-align: center;
@@ -27,6 +27,16 @@ header {
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  &__filter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
 
   &__game-grid {
     width: min(400px, 100%);

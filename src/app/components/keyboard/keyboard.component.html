@@ -3,7 +3,8 @@
     <button *ngFor="let key of row; let j = index; let first = first; let last = last" (click)="keyPress.emit(key)"
       [@fade]
       [ngStyle]="{'grid-column': getKeyColumnSize(j, i, first, last), 'grid-row': i + 1,
-                  'color': this.keyColor[key] ? 'snow' : '', 'background-color': getKeyColor(key)}">
+                  'color': this.keyColor[key] ? 'snow' : '', 'background-color': getKeyColor(key)}"
+      tabindex="-1">
       <span>
         {{ key.length === 1 ? key : '' }}
         <i class="fa-solid fa-delete-left" *ngIf="key === 'Backspace'"></i>

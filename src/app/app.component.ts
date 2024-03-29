@@ -7,13 +7,24 @@ import { BehaviorSubject, switchMap } from 'rxjs';
 import { Config } from './config';
 import { DialogService } from './services/dialog.service';
 import { UtilityService } from './services/utility.service';
-import { animate, style, transition, trigger } from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [
+    trigger('filter', [
+      state('white', style({
+        backdropFilter: 'grayscale(1)'
+      })),
+      state('berry', style({
+        backdropFilter: 'hue-rotate(200deg)'
+      })),
+      transition('* => *', [
+        animate(500)
+      ])
+    ]),
     trigger('twist', [
       transition(':enter', []),
       transition('* => *', [
@@ -66,6 +77,8 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
+    if (this.dialogService.isOpen())
+      return;
     const { key } = event;
     if (/^[A-Z]$/i.test(key)) {
       this.keyPress(key.toUpperCase());
@@ -144,6 +157,11 @@ export class AppComponent implements OnInit {
             }
           });
           break;
+        case 'WHITE':
+        case 'BERRY':
+        case 'CLEAR':
+          this.easterEgg.mutate(easterEgg => easterEgg.filter = this.attempt().reduce((word, tile) => word + tile.key, '').toLowerCase());
+          break;
         case 'NESSA':
           break;
         case 'LIGHT':
@@ -151,19 +169,25 @@ export class AppComponent implements OnInit {
         case 'NIGHT':
           break;
         case 'TWIST':
-          this.easterEgg.set({twist: Math.random()});
+          this.easterEgg.mutate(easterEgg => easterEgg.twist = Math.random());
           break;
         default:
       }
     }
   }
 
-  openNewGameDialog(data: any) {
+  private openNewGameDialog(data: any) {
     this.dialogService.open(data).subscribe((startNewGame: boolean) => {
       if (startNewGame) {
         this.resetGame();
       }
     });
+  }
+
+  clickNewGame(button: HTMLButtonElement) {
+    if (this.blockInput())
+      return;
+    this.triesLeft() ? this.openNewGameDialog({title: {text: 'New Game?'}}) : this.resetGame(button);
   }
 
   keyPress(key: string) {

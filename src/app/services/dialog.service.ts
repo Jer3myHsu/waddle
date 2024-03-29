@@ -38,6 +38,10 @@ export class DialogService {
     return this.dialog.asObservable();
   }
 
+  isOpen() {
+    return this.dialog ? !this.dialog.closed : false;
+  };
+
   close(returnValue?: any) {
     this.dialog.next(returnValue);
     this.dialog.complete();
