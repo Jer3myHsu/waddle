@@ -1,6 +1,6 @@
 <div class="game-grid">
   <ng-container *ngFor="let guess of guesses">
-    <div class="game-grid__tile" *ngFor="let tile of guess; index as i" [@flip]="{value: ':enter',params: {delay: i / 3}}" [ngStyle]="getTileColor(tile.status)">
+    <div class="game-grid__tile" *ngFor="let tile of guess; index as i" [@reveal]="{value: ':enter',params: {delay: i * 0.4}}" [ngStyle]="getTileColor(tile.status)">
       <span class="game-grid__tile-text">
         {{tile.key}}
       </span>

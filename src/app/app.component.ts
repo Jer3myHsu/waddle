@@ -77,7 +77,7 @@ export class AppComponent implements OnInit {
           key: keyTile.key,
           status: this.pickStatus(keyTile.status, history[keyTile.key]?.status)
         };
-      }, {delay: 1000 / 3}, () => {
+      }, 400, () => {
         this.triesLeft.update(t => t - 1);
         this.checkWin();
         this.input.set([]);

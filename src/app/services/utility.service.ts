@@ -7,15 +7,19 @@ export class UtilityService {
 
   constructor() { }
 
-  loopArray<T>(arr: T[], action: (item: T) => void, options: {delay?: number, immediateStart?: boolean} = {delay: 1000, immediateStart: true}, callback?: () => void) {
+  private loopTimeout<T>(arr: T[], action: (item: T) => void, delay: number = 1000, callback?: () => void) {
     setTimeout(() => {
-      action(arr[0]);
-      const newArr = arr.slice(1);
-      if (newArr.length) {
-        this.loopArray(newArr, action, {delay: options.delay, immediateStart: false}, callback);
-      } else {
-        callback?.();
-      }
-    }, options.immediateStart ? 0 : options.delay);
+      this.loopArray(arr, action, delay, callback);
+    }, delay);
+  }
+
+  loopArray<T>(arr: T[], action: (item: T) => void, delay: number = 1000, callback?: () => void) {
+    action(arr[0]);
+    const newArr = arr.slice(1);
+    if (newArr.length) {
+      this.loopTimeout(newArr, action, delay, callback);
+    } else {
+      callback?.();
+    }
   }
 }

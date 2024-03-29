@@ -1,4 +1,4 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { animate, group, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input } from '@angular/core';
 import { Config } from 'src/app/config';
 import { KeyStatus } from 'src/app/enums/key-status';
@@ -11,14 +11,18 @@ import { KeyTile } from 'src/app/models/key-tile';
   animations: [
     trigger('fade', [
       transition(':enter', [
-        style({ opacity: '0' }),
-        animate('.25s ease-out', style({ opacity: '1' })),
+        style({
+          opacity: '0',
+          transform: 'translate(-50%, -50%) scale(1.5)'
+        }),
+        animate('.25s ease-out', style({ opacity: '1', transform: 'translate(-50%, -50%)' })),
       ]),
     ]),
-    trigger('flip', [
+    trigger('reveal', [
       transition(':enter', [
         style({ backgroundColor: '#f5deb3' }),
-        animate('0.3s {{delay}}s ease-out', style({ })),
+        animate('0.1s {{delay}}s ease-out', style({ transform: 'translateY(-10px)', backgroundColor: '#f5deb3' })),
+        animate('0.3s ease-out', style({})),
       ], {params: {delay: 0}})
     ]),
   ]
