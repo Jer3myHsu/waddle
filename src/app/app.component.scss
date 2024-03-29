@@ -1,6 +1,15 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 header {
   border-bottom: solid 1px #00000066;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: antiquewhite;
   padding: 10px 0;
 
   h1 {
@@ -11,8 +20,8 @@ header {
 }
 
 .app {
-  max-width: 600px;
-  margin: 0 auto;
+  width: min(calc(100% - 20px), 600px);
+  align-self: center;
   padding: 10px;
   padding-top: 20px;
   display: flex;
@@ -44,12 +53,10 @@ header {
   }
   .app {
     justify-content: space-between;
+    flex-grow: 1;
 
     &__keyboard {
-      position: absolute;
-      left: 10px;
-      right: 10px;
-      bottom: 40px;
+      margin-bottom: 30px;
     }
   }
 }
