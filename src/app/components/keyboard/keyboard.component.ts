@@ -1,3 +1,4 @@
+import { state, style, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { KeyStatus } from 'src/app/enums/key-status';
 import { KeyTile } from 'src/app/models/key-tile';
@@ -5,7 +6,14 @@ import { KeyTile } from 'src/app/models/key-tile';
 @Component({
   selector: 'app-keyboard',
   templateUrl: './keyboard.component.html',
-  styleUrls: ['./keyboard.component.scss']
+  styleUrls: ['./keyboard.component.scss'],
+  animations: [
+    trigger('fade', [
+      state('*', style({
+        transition: 'all 0.25s ease-out'
+      }))
+    ])
+  ]
 })
 export class KeyboardComponent {
   @Output() keyPress = new EventEmitter<string>();
@@ -38,7 +46,7 @@ export class KeyboardComponent {
       case KeyStatus.Partial:
         return 'goldenrod';
       case KeyStatus.Correct:
-        return 'crimson';
+        return 'darkgreen';
       case KeyStatus.Used:
         return '#e7c789';
     }

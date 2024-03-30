@@ -1,1 +1,18 @@
-<p>dialog works!</p>
+<div class="dialog__backdrop" [@fade] *ngIf="isOpen">
+  <div class="dialog">
+    <header>
+      <i *ngIf="title?.icon" class="{{title.icon}}"></i> {{title.text}}
+    </header>
+    <main>
+      {{body}}
+    </main>
+    <footer>
+      <button *ngIf="!cancelButton.hidden" class="dialog__cancel-button" (click)="isOpen = false; dialogRef.close(false)">
+        {{cancelButton.text}} <i *ngIf="cancelButton.icon" class="{{cancelButton.icon}}"></i>
+      </button>
+      <button *ngIf="!confirmButton.hidden" class="dialog__ok-button" (click)="isOpen = false; dialogRef.close(true)">
+        {{confirmButton.text}} <i *ngIf="confirmButton.icon" class="{{confirmButton.icon}}"></i>
+      </button>
+    </footer>
+  </div>
+</div>

@@ -2,9 +2,11 @@
 html {
   font-family: 'Quicksand', sans-serif;
   background-color: antiquewhite;
+  height: 100%;
 }
 
 body {
+  height: 100%;
   margin: 0;
 }
 
@@ -14,4 +16,6 @@ button {
   font-weight: bold;
   border: none;
   cursor: pointer;
+  padding: 8px 18px;
+  background-color: snow;
 }

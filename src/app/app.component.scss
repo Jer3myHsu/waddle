@@ -1,28 +1,72 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 header {
-  border-bottom: solid 1px #00000066;
-  position: relative;
-  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: antiquewhite;
+  padding-top: 10px;
+  box-shadow: antiquewhite 0 0 10px 10px;
 
   h1 {
     text-align: center;
-    font-size: 28px;
-    margin: 0;
+    font-size: 30px;
+    margin: 0 16px;
   }
 }
 
 .app {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 6px;
+  width: min(calc(100% - 20px), 600px);
+  align-self: center;
+  padding: 10px;
   padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__filter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  &__game-grid {
+    width: min(400px, 100%);
+    margin: 0 auto;
+  }
+
+  &__keyboard {
+    height: calc(200px - 22px);
+  }
 
   &__new-game {
     position: absolute;
     top: 50%;
-    left: 16px;
+    right: 16px;
     transform: translateY(-50%);
-    background-color: darkgreen;
     color: snow;
-    padding: 6px 16px;
+    background-color: goldenrod;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  header h1 {
+    text-align: left;
+  }
+  .app {
+    justify-content: space-between;
+    flex-grow: 1;
+
+    &__keyboard {
+      margin-bottom: 30px;
+    }
   }
 }
